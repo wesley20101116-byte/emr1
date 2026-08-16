@@ -1,0 +1,3206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Health Passport</title>
+
+<style>
+:root {
+    --primary: #2f80ed;
+    --primary-dark: #1769c2;
+    --primary-light: #eaf4ff;
+    --blue-50: #f5faff;
+    --blue-100: #eaf4ff;
+    --blue-200: #cfe8ff;
+    --blue-300: #9dd0ff;
+    --blue-500: #3b9cff;
+    --blue-700: #1769c2;
+    --navy: #12345b;
+
+    --bg: #f4f9fd;
+    --card: #ffffff;
+    --text: #18324d;
+    --muted: #71849a;
+    --border: #dceaf5;
+
+    --danger: #e95757;
+    --success: #20a878;
+
+    --shadow: 0 10px 35px rgba(38, 115, 180, .10);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans TC",
+        "Noto Sans JP",
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+
+    background:
+        radial-gradient(circle at top right, #dff1ff 0, transparent 30%),
+        var(--bg);
+
+    color: var(--text);
+    min-height: 100vh;
+    transition: .3s;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+    height: 72px;
+    background: rgba(255,255,255,.88);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 800;
+    color: var(--navy);
+}
+
+.logo-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+
+    display: grid;
+    place-items: center;
+
+    color: white;
+    font-size: 22px;
+
+    background: linear-gradient(
+        135deg,
+        #57b6ff,
+        #287fe4
+    );
+
+    box-shadow: 0 8px 20px rgba(47,128,237,.25);
+}
+
+.logo-text small {
+    display: block;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.language-select,
+.icon-button {
+    height: 40px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 12px;
+    color: var(--text);
+}
+
+.language-select {
+    padding: 0 12px;
+    outline: none;
+}
+
+.icon-button {
+    width: 40px;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 72px);
+}
+
+.sidebar {
+    width: 255px;
+    padding: 25px 15px;
+
+    background: rgba(255,255,255,.78);
+    border-right: 1px solid var(--border);
+
+    position: sticky;
+    top: 72px;
+    height: calc(100vh - 72px);
+
+    overflow-y: auto;
+}
+
+.nav-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #91a3b7;
+    margin: 15px 12px 8px;
+    letter-spacing: 1px;
+}
+
+.nav-item {
+    width: 100%;
+    border: 0;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 14px;
+    margin-bottom: 4px;
+
+    border-radius: 13px;
+
+    color: #587086;
+    text-align: left;
+
+    transition: .2s;
+}
+
+.nav-item:hover {
+    background: var(--blue-100);
+    color: var(--primary);
+}
+
+.nav-item.active {
+    background: linear-gradient(
+        90deg,
+        #e5f3ff,
+        #f2f9ff
+    );
+
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.nav-icon {
+    width: 25px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.main {
+    flex: 1;
+    padding: 32px;
+    max-width: 1500px;
+    margin: auto;
+    width: 100%;
+}
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-title h1 {
+    font-size: 28px;
+    color: var(--navy);
+}
+
+.page-title p {
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    width: 270px;
+    height: 43px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    padding: 0 15px 0 42px;
+
+    outline: none;
+    background: white;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 12px;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    background:
+        linear-gradient(
+            135deg,
+            #2d8bea,
+            #6fc5ff
+        );
+
+    color: white;
+
+    border-radius: 25px;
+    padding: 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 18px 45px rgba(47,128,237,.20);
+
+    overflow: hidden;
+    position: relative;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.08);
+
+    right: -100px;
+    top: -130px;
+}
+
+.hero h2 {
+    font-size: 27px;
+    margin-bottom: 7px;
+}
+
+.hero p {
+    opacity: .88;
+}
+
+.hero-button {
+    border: 0;
+    background: white;
+    color: var(--primary-dark);
+
+    padding: 12px 18px;
+    border-radius: 12px;
+
+    font-weight: 700;
+}
+
+/* =========================
+   EMERGENCY CARD
+========================= */
+
+.emergency {
+    background: white;
+    border: 1px solid #ffd8d8;
+
+    border-radius: 20px;
+    padding: 22px;
+
+    margin-bottom: 25px;
+
+    box-shadow: var(--shadow);
+}
+
+.emergency-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--danger);
+    margin-bottom: 18px;
+}
+
+.emergency-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--danger);
+    border-radius: 50%;
+    box-shadow: 0 0 0 6px #fff0f0;
+}
+
+.emergency-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, 1fr);
+    gap: 14px;
+}
+
+.emergency-item {
+    background: #fff8f8;
+    border-radius: 14px;
+    padding: 14px;
+}
+
+.emergency-item span {
+    color: #9b8585;
+    font-size: 12px;
+}
+
+.emergency-item strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 17px;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.stats {
+    display: grid;
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 17px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid var(--border);
+
+    padding: 20px;
+    border-radius: 18px;
+
+    box-shadow: var(--shadow);
+}
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--blue-100);
+    border-radius: 12px;
+    color: var(--primary);
+}
+
+.stat-number {
+    font-size: 26px;
+    font-weight: 800;
+    margin-top: 14px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+
+    border-radius: 20px;
+    padding: 22px;
+
+    box-shadow: var(--shadow);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 17px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: #60788f;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    padding: 12px 14px;
+
+    outline: none;
+    color: var(--text);
+    background: #fbfdff;
+
+    transition: .2s;
+}
+
+.form-group textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--blue-300);
+    box-shadow:
+        0 0 0 4px rgba(47,128,237,.08);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+    border: 0;
+    border-radius: 11px;
+    padding: 10px 16px;
+    font-weight: 700;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-light {
+    background: var(--blue-100);
+    color: var(--primary-dark);
+}
+
+.btn-danger {
+    background: #fff0f0;
+    color: var(--danger);
+}
+
+/* =========================
+   RECORD LIST
+========================= */
+
+.record-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.record {
+    border: 1px solid var(--border);
+    background: #fbfdff;
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.record-main {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.record-icon {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--blue-100);
+    border-radius: 12px;
+
+    color: var(--primary);
+}
+
+.record-name {
+    font-weight: 700;
+}
+
+.record-date {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.avatar {
+    width: 75px;
+    height: 75px;
+
+    border-radius: 22px;
+
+    display: grid;
+    place-items: center;
+
+    font-size: 30px;
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6bc4ff,
+            #2f80ed
+        );
+}
+
+.profile h2 {
+    color: var(--navy);
+}
+
+.profile p {
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+/* =========================
+   TAGS
+========================= */
+
+.tag {
+    display: inline-block;
+
+    padding: 6px 10px;
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    background: var(--blue-100);
+    color: var(--primary-dark);
+
+    margin: 3px;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+
+    background: #163b61;
+    color: white;
+
+    padding: 13px 18px;
+
+    border-radius: 12px;
+
+    opacity: 0;
+    transform: translateY(20px);
+
+    transition: .3s;
+
+    z-index: 3000;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile-menu {
+    display: none;
+}
+
+@media(max-width: 1000px) {
+
+    .sidebar {
+        width: 215px;
+    }
+
+    .stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .emergency-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 750px) {
+
+    .topbar {
+        padding: 0 15px;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        z-index: 2000;
+
+        left: -280px;
+        top: 72px;
+
+        width: 270px;
+
+        transition: .3s;
+
+        box-shadow: 10px 0 30px rgba(0,0,0,.1);
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .main {
+        padding: 20px 15px;
+    }
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-box,
+    .search-box input {
+        width: 100%;
+    }
+
+    .hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .emergency-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .logo-text {
+        display: none;
+    }
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+body.dark {
+    --bg: #0c1928;
+    --card: #112438;
+    --text: #e4f2ff;
+    --muted: #91a9bd;
+    --border: #23415b;
+    --blue-100: #163957;
+
+    background: #0c1928;
+}
+
+body.dark .topbar,
+body.dark .sidebar,
+body.dark .card,
+body.dark .stat-card,
+body.dark .emergency {
+    background: #112438;
+}
+
+body.dark .nav-item {
+    color: #a9bed0;
+}
+
+body.dark .nav-item.active {
+    background: #173c5c;
+}
+
+body.dark .search-box input,
+body.dark .language-select,
+body.dark .icon-button,
+body.dark .form-group input,
+body.dark .form-group select,
+body.dark .form-group textarea {
+    background: #102237;
+    color: white;
+    border-color: #294963;
+}
+
+body.dark .record {
+    background: #102237;
+}
+
+body.dark .emergency-item {
+    background: #281b22;
+}
+
+/* =========================
+   PRINT
+========================= */
+
+@media print {
+
+    .topbar,
+    .sidebar,
+    .search-box,
+    .hero-button,
+    button {
+        display: none !important;
+    }
+
+    .main {
+        padding: 0;
+        max-width: none;
+    }
+
+    .layout {
+        display: block;
+    }
+
+    .card,
+    .stat-card,
+    .emergency {
+        box-shadow: none;
+    }
+
+    body {
+        background: white;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     TOP BAR
+========================= -->
+
+<header class="topbar">
+
+    <div class="logo">
+
+        <button
+            class="icon-button mobile-menu"
+            onclick="toggleSidebar()">
+            ☰
+        </button>
+
+        <div class="logo-icon">
+            ♥
+        </div>
+
+        <div class="logo-text">
+            My Health Passport
+            <small data-i18n="subtitle">
+                個人隨身電子病歷
+            </small>
+        </div>
+
+    </div>
+
+    <div class="top-actions">
+
+        <select
+            id="languageSelect"
+            class="language-select"
+            onchange="changeLanguage(this.value)">
+
+            <option value="zh-TW">繁體中文</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="zh-CN">简体中文</option>
+
+        </select>
+
+        <button
+            class="icon-button"
+            onclick="toggleDarkMode()">
+            ◐
+        </button>
+
+        <button
+            class="icon-button"
+            onclick="window.print()">
+            🖨
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="layout">
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="nav-title" data-i18n="overview">
+        OVERVIEW
+    </div>
+
+    <button class="nav-item active"
+            onclick="showSection('dashboard',this)">
+        <span class="nav-icon">🏠</span>
+        <span data-i18n="dashboard">總覽</span>
+    </button>
+
+
+    <div class="nav-title" data-i18n="medical">
+        MEDICAL RECORD
+    </div>
+
+    <button class="nav-item"
+            onclick="showSection('personal',this)">
+        <span class="nav-icon">👤</span>
+        <span data-i18n="personal">個人資料</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('history',this)">
+        <span class="nav-icon">🩺</span>
+        <span data-i18n="history">個人史</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('disease',this)">
+        <span class="nav-icon">🧬</span>
+        <span data-i18n="disease">疾病史</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('family',this)">
+        <span class="nav-icon">👨‍👩‍👧</span>
+        <span data-i18n="family">家族史</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('surgery',this)">
+        <span class="nav-icon">🏥</span>
+        <span data-i18n="surgery">手術／住院</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('medication',this)">
+        <span class="nav-icon">💊</span>
+        <span data-i18n="medication">用藥史</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('allergy',this)">
+        <span class="nav-icon">⚠️</span>
+        <span data-i18n="allergy">過敏史</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('vaccine',this)">
+        <span class="nav-icon">💉</span>
+        <span data-i18n="vaccine">疫苗紀錄</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('lab',this)">
+        <span class="nav-icon">🧪</span>
+        <span data-i18n="lab">檢驗／影像</span>
+    </button>
+
+
+    <div class="nav-title" data-i18n="other">
+        OTHER
+    </div>
+
+    <button class="nav-item"
+            onclick="showSection('vitals',this)">
+        <span class="nav-icon">❤️</span>
+        <span data-i18n="vitals">生命徵象</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('emergencyContact',this)">
+        <span class="nav-icon">📞</span>
+        <span data-i18n="emergencyContact">緊急聯絡人</span>
+    </button>
+
+    <button class="nav-item"
+            onclick="showSection('documents',this)">
+        <span class="nav-icon">📄</span>
+        <span data-i18n="documents">醫療文件</span>
+    </button>
+
+</aside>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="main">
+
+
+<!-- =========================
+     DASHBOARD
+========================= -->
+
+<section id="dashboard"
+         class="section active">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="welcome">
+                我的健康護照
+            </h1>
+
+            <p data-i18n="welcomeSub">
+                所有重要健康資訊，一處管理。
+            </p>
+
+        </div>
+
+        <div class="search-box">
+
+            <span class="search-icon">
+                🔍
+            </span>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="搜尋病歷..."
+                oninput="searchRecords(this.value)">
+
+        </div>
+
+    </div>
+
+
+    <div class="hero">
+
+        <div>
+
+            <h2 data-i18n="heroTitle">
+                Your Health, Anywhere.
+            </h2>
+
+            <p data-i18n="heroSub">
+                隨身攜帶你的重要醫療資訊。
+            </p>
+
+        </div>
+
+        <button
+            class="hero-button"
+            onclick="showSection('personal')"
+            data-i18n="editProfile">
+
+            編輯我的資料
+
+        </button>
+
+    </div>
+
+
+    <!-- Emergency -->
+
+    <div class="emergency">
+
+        <div class="emergency-header">
+
+            <span class="emergency-dot"></span>
+
+            <strong data-i18n="emergencyTitle">
+                緊急醫療資訊
+            </strong>
+
+        </div>
+
+
+        <div class="emergency-grid">
+
+            <div class="emergency-item">
+
+                <span data-i18n="bloodType">
+                    血型
+                </span>
+
+                <strong id="bloodDisplay">
+                    O+
+                </strong>
+
+            </div>
+
+
+            <div class="emergency-item">
+
+                <span data-i18n="allergy">
+                    嚴重過敏
+                </span>
+
+                <strong>
+                    Penicillin
+                </strong>
+
+            </div>
+
+
+            <div class="emergency-item">
+
+                <span data-i18n="importantDisease">
+                    重要疾病
+                </span>
+
+                <strong>
+                    Hypertension
+                </strong>
+
+            </div>
+
+
+            <div class="emergency-item">
+
+                <span data-i18n="medication">
+                    目前用藥
+                </span>
+
+                <strong>
+                    3
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Stats -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div>
+                    <div class="stat-label"
+                         data-i18n="disease">
+                        疾病
+                    </div>
+
+                    <div class="stat-number">
+                        2
+                    </div>
+                </div>
+
+                <div class="stat-icon">
+                    🧬
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div>
+
+                    <div class="stat-label"
+                         data-i18n="surgery">
+                        手術
+                    </div>
+
+                    <div class="stat-number">
+                        1
+                    </div>
+
+                </div>
+
+                <div class="stat-icon">
+                    🏥
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div>
+
+                    <div class="stat-label"
+                         data-i18n="medication">
+                        用藥
+                    </div>
+
+                    <div class="stat-number">
+                        3
+                    </div>
+
+                </div>
+
+                <div class="stat-icon">
+                    💊
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <div>
+
+                    <div class="stat-label"
+                         data-i18n="vaccine">
+                        疫苗
+                    </div>
+
+                    <div class="stat-number">
+                        8
+                    </div>
+
+                </div>
+
+                <div class="stat-icon">
+                    💉
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Profile -->
+
+    <div class="card">
+
+        <div class="profile">
+
+            <div class="avatar">
+                👤
+            </div>
+
+            <div>
+
+                <h2 id="profileName">
+                    Your Name
+                </h2>
+
+                <p>
+                    <span data-i18n="birthday">
+                        出生日期
+                    </span>
+                    ·
+                    <span id="profileBirthday">
+                        1990-01-01
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+
+        <div>
+
+            <span class="tag">
+                O+
+            </span>
+
+            <span class="tag">
+                Penicillin Allergy
+            </span>
+
+            <span class="tag">
+                Hypertension
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PERSONAL
+========================= -->
+
+<section id="personal"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="personal">
+                個人資料
+            </h1>
+
+            <p data-i18n="personalSub">
+                管理你的基本身份與醫療資訊。
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div class="card-title">
+                👤 <span data-i18n="basicInfo">
+                    基本資料
+                </span>
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="savePersonal()"
+                data-i18n="save">
+                儲存
+            </button>
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label data-i18n="name">
+                    姓名
+                </label>
+
+                <input
+                    id="nameInput"
+                    placeholder="Your Name">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label data-i18n="birthday">
+                    出生日期
+                </label>
+
+                <input
+                    type="date"
+                    id="birthdayInput">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label data-i18n="gender">
+                    性別
+                </label>
+
+                <select>
+
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label data-i18n="bloodType">
+                    血型
+                </label>
+
+                <select id="bloodInput">
+
+                    <option>A+</option>
+                    <option>A-</option>
+                    <option>B+</option>
+                    <option>B-</option>
+                    <option>AB+</option>
+                    <option>AB-</option>
+                    <option>O+</option>
+                    <option>O-</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label data-i18n="height">
+                    身高
+                </label>
+
+                <input
+                    placeholder="170 cm">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label data-i18n="weight">
+                    體重
+                </label>
+
+                <input
+                    placeholder="65 kg">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    placeholder="example@email.com">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label data-i18n="phone">
+                    電話
+                </label>
+
+                <input
+                    placeholder="+886 912 345 678">
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label data-i18n="address">
+                    地址
+                </label>
+
+                <input
+                    placeholder="Address">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PERSONAL HISTORY
+========================= -->
+
+<section id="history"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="history">
+                個人史
+            </h1>
+
+            <p>
+                Personal History
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="addRecord('history')"
+            data-i18n="add">
+            ＋ 新增
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="record-list"
+             id="historyRecords">
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        🚭
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Smoking History
+                        </div>
+
+                        <div class="record-date">
+                            Never smoker
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        🏃
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Exercise
+                        </div>
+
+                        <div class="record-date">
+                            3 times / week
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     DISEASE
+========================= -->
+
+<section id="disease"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="disease">
+                疾病史
+            </h1>
+
+            <p>
+                Medical History
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="addRecord('disease')"
+            data-i18n="add">
+            ＋ 新增
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="record-list"
+             id="diseaseRecords">
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        ❤️
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Hypertension
+                        </div>
+
+                        <div class="record-date">
+                            Diagnosed: 2021
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    class="btn btn-light">
+                    View
+                </button>
+
+            </div>
+
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        🩸
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Hyperlipidemia
+                        </div>
+
+                        <div class="record-date">
+                            Diagnosed: 2022
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FAMILY
+========================= -->
+
+<section id="family"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="family">
+                家族史
+            </h1>
+
+            <p>
+                Family History
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="addRecord('family')"
+            data-i18n="add">
+            ＋ 新增
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Father / 父親</label>
+
+                <textarea
+                    placeholder="Medical history..."></textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Mother / 母親</label>
+
+                <textarea
+                    placeholder="Medical history..."></textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Siblings / 兄弟姊妹</label>
+
+                <textarea></textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Grandparents / 祖父母</label>
+
+                <textarea></textarea>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SURGERY
+========================= -->
+
+<section id="surgery"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="surgery">
+                手術／住院
+            </h1>
+
+            <p>
+                Surgery & Hospitalization
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="addRecord('surgery')"
+            data-i18n="add">
+            ＋ 新增
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="record-list"
+             id="surgeryRecords">
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        🏥
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Appendectomy
+                        </div>
+
+                        <div class="record-date">
+                            2018 · General Hospital
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MEDICATION
+========================= -->
+
+<section id="medication"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="medication">
+                用藥史
+            </h1>
+
+            <p>
+                Medication History
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="addRecord('medication')"
+            data-i18n="add">
+            ＋ 新增
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="record-list"
+             id="medicationRecords">
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        💊
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Amlodipine 5 mg
+                        </div>
+
+                        <div class="record-date">
+                            Once daily · Hypertension
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        💊
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Atorvastatin 20 mg
+                        </div>
+
+                        <div class="record-date">
+                            Once daily
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ALLERGY
+========================= -->
+
+<section id="allergy"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="allergy">
+                過敏史
+            </h1>
+
+            <p>
+                Allergies
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="addRecord('allergy')"
+            data-i18n="add">
+            ＋ 新增
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="record">
+
+            <div class="record-main">
+
+                <div
+                    class="record-icon"
+                    style="background:#fff0f0;color:#e95757;">
+                    ⚠️
+                </div>
+
+                <div>
+
+                    <div class="record-name">
+                        Penicillin
+                    </div>
+
+                    <div class="record-date">
+                        Severe allergy
+                    </div>
+
+                </div>
+
+            </div>
+
+            <span class="tag"
+                  style="background:#fff0f0;color:#d64545;">
+                Severe
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     VACCINE
+========================= -->
+
+<section id="vaccine"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="vaccine">
+                疫苗紀錄
+            </h1>
+
+            <p>
+                Vaccination Records
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="addRecord('vaccine')"
+            data-i18n="add">
+            ＋ 新增
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="record-list">
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        💉
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Influenza Vaccine
+                        </div>
+
+                        <div class="record-date">
+                            2025-10-15
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        💉
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            COVID-19 Vaccine
+                        </div>
+
+                        <div class="record-date">
+                            2025-06-20
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     LAB
+========================= -->
+
+<section id="lab"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="lab">
+                檢驗／影像
+            </h1>
+
+            <p>
+                Laboratory & Imaging
+            </p>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="addRecord('lab')"
+            data-i18n="add">
+            ＋ 新增
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="record-list">
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        🧪
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Blood Test
+                        </div>
+
+                        <div class="record-date">
+                            2026-01-20 · CBC / Lipid Profile
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-light">
+                    View
+                </button>
+
+            </div>
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        🩻
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Chest X-Ray
+                        </div>
+
+                        <div class="record-date">
+                            2025-11-10
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     VITALS
+========================= -->
+
+<section id="vitals"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="vitals">
+                生命徵象
+            </h1>
+
+            <p>
+                Vital Signs
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Blood Pressure
+            </div>
+
+            <div class="stat-number">
+                120/80
+            </div>
+
+            <div class="stat-label">
+                mmHg
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Heart Rate
+            </div>
+
+            <div class="stat-number">
+                72
+            </div>
+
+            <div class="stat-label">
+                bpm
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                SpO₂
+            </div>
+
+            <div class="stat-number">
+                98%
+            </div>
+
+            <div class="stat-label">
+                Oxygen Saturation
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Temperature
+            </div>
+
+            <div class="stat-number">
+                36.5
+            </div>
+
+            <div class="stat-label">
+                °C
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div class="card-title">
+                ❤️ Health Measurements
+            </div>
+
+            <button
+                class="btn btn-primary"
+                onclick="addRecord('vitals')"
+                data-i18n="add">
+                ＋ 新增
+            </button>
+
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+                    Blood Pressure
+                </label>
+
+                <input placeholder="120 / 80">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Heart Rate
+                </label>
+
+                <input placeholder="72 bpm">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Temperature
+                </label>
+
+                <input placeholder="36.5 °C">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    SpO₂
+                </label>
+
+                <input placeholder="98 %">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     EMERGENCY CONTACT
+========================= -->
+
+<section id="emergencyContact"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="emergencyContact">
+                緊急聯絡人
+            </h1>
+
+            <p>
+                Emergency Contact
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label data-i18n="name">
+                    姓名
+                </label>
+
+                <input placeholder="Contact Name">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Relationship
+                </label>
+
+                <input placeholder="Family / Friend">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Phone
+                </label>
+
+                <input placeholder="+886 912 345 678">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Email
+                </label>
+
+                <input placeholder="email@example.com">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     DOCUMENTS
+========================= -->
+
+<section id="documents"
+         class="section">
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1 data-i18n="documents">
+                醫療文件
+            </h1>
+
+            <p>
+                Medical Documents
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="record-list">
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        📄
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Medical Checkup 2026
+                        </div>
+
+                        <div class="record-date">
+                            PDF · 2.4 MB
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-light">
+                    View
+                </button>
+
+            </div>
+
+
+            <div class="record">
+
+                <div class="record-main">
+
+                    <div class="record-icon">
+                        📄
+                    </div>
+
+                    <div>
+
+                        <div class="record-name">
+                            Surgery Report
+                        </div>
+
+                        <div class="record-date">
+                            PDF · 1.8 MB
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-light">
+                    View
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+</div>
+
+
+<div class="toast" id="toast">
+    Saved successfully
+</div>
+
+
+<script>
+
+/* =====================================================
+   LANGUAGE SYSTEM
+===================================================== */
+
+const translations = {
+
+    "zh-TW": {
+
+        subtitle: "個人隨身電子病歷",
+        overview: "總覽",
+        medical: "醫療紀錄",
+        other: "其他",
+        dashboard: "總覽",
+        personal: "個人資料",
+        history: "個人史",
+        disease: "疾病史",
+        family: "家族史",
+        surgery: "手術／住院",
+        medication: "用藥史",
+        allergy: "過敏史",
+        vaccine: "疫苗紀錄",
+        lab: "檢驗／影像",
+        vitals: "生命徵象",
+        emergencyContact: "緊急聯絡人",
+        documents: "醫療文件",
+
+        welcome: "我的健康護照",
+        welcomeSub: "所有重要健康資訊，一處管理。",
+        heroTitle: "Your Health, Anywhere.",
+        heroSub: "隨身攜帶你的重要醫療資訊。",
+        editProfile: "編輯我的資料",
+
+        emergencyTitle: "緊急醫療資訊",
+        bloodType: "血型",
+        importantDisease: "重要疾病",
+
+        birthday: "出生日期",
+        basicInfo: "基本資料",
+        name: "姓名",
+        gender: "性別",
+        height: "身高",
+        weight: "體重",
+        phone: "電話",
+        address: "地址",
+
+        save: "儲存",
+        add: "＋ 新增"
+    },
+
+
+    "en": {
+
+        subtitle: "Personal Electronic Medical Record",
+        overview: "OVERVIEW",
+        medical: "MEDICAL RECORD",
+        other: "OTHER",
+
+        dashboard: "Dashboard",
+        personal: "Personal Information",
+        history: "Personal History",
+        disease: "Medical History",
+        family: "Family History",
+        surgery: "Surgery / Hospitalization",
+        medication: "Medication",
+        allergy: "Allergies",
+        vaccine: "Vaccinations",
+        lab: "Laboratory / Imaging",
+        vitals: "Vital Signs",
+        emergencyContact: "Emergency Contact",
+        documents: "Medical Documents",
+
+        welcome: "My Health Passport",
+        welcomeSub: "All your important health information in one place.",
+        heroTitle: "Your Health, Anywhere.",
+        heroSub: "Carry your important medical information with you.",
+        editProfile: "Edit My Profile",
+
+        emergencyTitle: "Emergency Medical Information",
+        bloodType: "Blood Type",
+        importantDisease: "Important Conditions",
+
+        birthday: "Date of Birth",
+        basicInfo: "Basic Information",
+        name: "Name",
+        gender: "Gender",
+        height: "Height",
+        weight: "Weight",
+        phone: "Phone",
+        address: "Address",
+
+        save: "Save",
+        add: "+ Add"
+    },
+
+
+    "ja": {
+
+        subtitle: "個人電子カルテ",
+        overview: "概要",
+        medical: "医療記録",
+        other: "その他",
+
+        dashboard: "ダッシュボード",
+        personal: "個人情報",
+        history: "既往歴・生活歴",
+        disease: "病歴",
+        family: "家族歴",
+        surgery: "手術・入院歴",
+        medication: "服薬歴",
+        allergy: "アレルギー",
+        vaccine: "予防接種",
+        lab: "検査・画像",
+        vitals: "バイタルサイン",
+        emergencyContact: "緊急連絡先",
+        documents: "医療書類",
+
+        welcome: "マイ・ヘルス・パスポート",
+        welcomeSub: "重要な健康情報を一か所で管理します。",
+        heroTitle: "Your Health, Anywhere.",
+        heroSub: "重要な医療情報をいつでも携帯できます。",
+        editProfile: "プロフィールを編集",
+
+        emergencyTitle: "緊急医療情報",
+        bloodType: "血液型",
+        importantDisease: "重要な疾患",
+
+        birthday: "生年月日",
+        basicInfo: "基本情報",
+        name: "氏名",
+        gender: "性別",
+        height: "身長",
+        weight: "体重",
+        phone: "電話番号",
+        address: "住所",
+
+        save: "保存",
+        add: "＋ 追加"
+    },
+
+
+    "ko": {
+
+        subtitle: "개인 전자 의료 기록",
+        overview: "개요",
+        medical: "의료 기록",
+        other: "기타",
+
+        dashboard: "대시보드",
+        personal: "개인 정보",
+        history: "개인 병력",
+        disease: "질병력",
+        family: "가족력",
+        surgery: "수술 / 입원",
+        medication: "복약 기록",
+        allergy: "알레르기",
+        vaccine: "예방접종",
+        lab: "검사 / 영상",
+        vitals: "활력징후",
+        emergencyContact: "응급 연락처",
+        documents: "의료 문서",
+
+        welcome: "나의 건강 패스포트",
+        welcomeSub: "중요한 건강 정보를 한 곳에서 관리하세요.",
+        heroTitle: "Your Health, Anywhere.",
+        heroSub: "중요한 의료 정보를 항상 휴대하세요.",
+        editProfile: "프로필 편집",
+
+        emergencyTitle: "응급 의료 정보",
+        bloodType: "혈액형",
+        importantDisease: "중요 질환",
+
+        birthday: "생년월일",
+        basicInfo: "기본 정보",
+        name: "이름",
+        gender: "성별",
+        height: "키",
+        weight: "체중",
+        phone: "전화번호",
+        address: "주소",
+
+        save: "저장",
+        add: "＋ 추가"
+    },
+
+
+    "zh-CN": {
+
+        subtitle: "个人随身电子病历",
+        overview: "总览",
+        medical: "医疗记录",
+        other: "其他",
+
+        dashboard: "总览",
+        personal: "个人资料",
+        history: "个人史",
+        disease: "疾病史",
+        family: "家族史",
+        surgery: "手术／住院",
+        medication: "用药史",
+        allergy: "过敏史",
+        vaccine: "疫苗记录",
+        lab: "检查／影像",
+        vitals: "生命体征",
+        emergencyContact: "紧急联系人",
+        documents: "医疗文件",
+
+        welcome: "我的健康护照",
+        welcomeSub: "所有重要健康信息，一处管理。",
+        heroTitle: "Your Health, Anywhere.",
+        heroSub: "随身携带你的重要医疗信息。",
+        editProfile: "编辑我的资料",
+
+        emergencyTitle: "紧急医疗信息",
+        bloodType: "血型",
+        importantDisease: "重要疾病",
+
+        birthday: "出生日期",
+        basicInfo: "基本资料",
+        name: "姓名",
+        gender: "性别",
+        height: "身高",
+        weight: "体重",
+        phone: "电话",
+        address: "地址",
+
+        save: "保存",
+        add: "＋ 新增"
+    }
+};
+
+
+function changeLanguage(lang) {
+
+    const dict = translations[lang];
+
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach(element => {
+
+            const key =
+                element.getAttribute("data-i18n");
+
+            if (dict[key]) {
+                element.textContent = dict[key];
+            }
+
+        });
+
+    localStorage.setItem(
+        "healthLanguage",
+        lang
+    );
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function showSection(sectionId, clickedButton) {
+
+    document
+        .querySelectorAll(".section")
+        .forEach(section => {
+
+            section.classList.remove("active");
+
+        });
+
+
+    const section =
+        document.getElementById(sectionId);
+
+    if (section) {
+        section.classList.add("active");
+    }
+
+
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(button => {
+
+            button.classList.remove("active");
+
+        });
+
+
+    if (clickedButton) {
+        clickedButton.classList.add("active");
+    }
+
+
+    document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* =====================================================
+   MOBILE SIDEBAR
+===================================================== */
+
+function toggleSidebar() {
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+}
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+function toggleDarkMode() {
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "darkMode",
+        document.body.classList.contains("dark")
+    );
+
+}
+
+
+/* =====================================================
+   PERSONAL DATA
+===================================================== */
+
+function savePersonal() {
+
+    const data = {
+
+        name:
+            document.getElementById(
+                "nameInput"
+            ).value,
+
+        birthday:
+            document.getElementById(
+                "birthdayInput"
+            ).value,
+
+        blood:
+            document.getElementById(
+                "bloodInput"
+            ).value
+
+    };
+
+
+    localStorage.setItem(
+        "healthPersonal",
+        JSON.stringify(data)
+    );
+
+
+    updateProfile(data);
+
+    showToast(
+        translations[
+            document.getElementById(
+                "languageSelect"
+            ).value
+        ].save + " ✓"
+    );
+
+}
+
+
+function updateProfile(data) {
+
+    if (!data) return;
+
+
+    if (data.name) {
+
+        document
+            .getElementById(
+                "profileName"
+            )
+            .textContent = data.name;
+
+    }
+
+
+    if (data.birthday) {
+
+        document
+            .getElementById(
+                "profileBirthday"
+            )
+            .textContent = data.birthday;
+
+    }
+
+
+    if (data.blood) {
+
+        document
+            .getElementById(
+                "bloodDisplay"
+            )
+            .textContent = data.blood;
+
+    }
+
+}
+
+
+/* =====================================================
+   ADD RECORD
+===================================================== */
+
+function addRecord(type) {
+
+    const name =
+        prompt(
+            "請輸入紀錄名稱 / Enter record name:"
+        );
+
+    if (!name) return;
+
+
+    const container =
+        document.getElementById(
+            type + "Records"
+        );
+
+
+    if (!container) {
+
+        showToast(
+            "New record added"
+        );
+
+        return;
+    }
+
+
+    const record =
+        document.createElement("div");
+
+    record.className = "record";
+
+
+    record.innerHTML = `
+
+        <div class="record-main">
+
+            <div class="record-icon">
+                ✚
+            </div>
+
+            <div>
+
+                <div class="record-name">
+                    ${escapeHTML(name)}
+                </div>
+
+                <div class="record-date">
+                    ${new Date()
+                        .toLocaleDateString()}
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="btn btn-danger"
+            onclick="this.closest('.record').remove()">
+            Delete
+        </button>
+    `;
+
+
+    container.appendChild(record);
+
+    showToast(
+        "Record added ✓"
+    );
+
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+function searchRecords(keyword) {
+
+    keyword =
+        keyword
+            .toLowerCase()
+            .trim();
+
+
+    const records =
+        document.querySelectorAll(
+            ".record"
+        );
+
+
+    records.forEach(record => {
+
+        const text =
+            record
+                .textContent
+                .toLowerCase();
+
+        record.style.display =
+            text.includes(keyword)
+                ? "flex"
+                : "none";
+
+    });
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2200);
+
+}
+
+
+/* =====================================================
+   SECURITY HELPER
+===================================================== */
+
+function escapeHTML(value) {
+
+    return value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =====================================================
+   LOAD DATA
+===================================================== */
+
+function loadData() {
+
+    const language =
+        localStorage.getItem(
+            "healthLanguage"
+        ) || "zh-TW";
+
+
+    document
+        .getElementById(
+            "languageSelect"
+        )
+        .value = language;
+
+
+    changeLanguage(language);
+
+
+    const darkMode =
+        localStorage.getItem(
+            "darkMode"
+        ) === "true";
+
+
+    if (darkMode) {
+        document.body.classList.add("dark");
+    }
+
+
+    const personal =
+        JSON.parse(
+            localStorage.getItem(
+                "healthPersonal"
+            ) || "null"
+        );
+
+
+    if (personal) {
+
+        document
+            .getElementById(
+                "nameInput"
+            ).value =
+                personal.name || "";
+
+
+        document
+            .getElementById(
+                "birthdayInput"
+            ).value =
+                personal.birthday || "";
+
+
+        document
+            .getElementById(
+                "bloodInput"
+            ).value =
+                personal.blood || "O+";
+
+
+        updateProfile(personal);
+
+    }
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    loadData
+);
+
+</script>
+
+</body>
+</html>
